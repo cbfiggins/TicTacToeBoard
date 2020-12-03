@@ -19,21 +19,39 @@ TicTacToeBoard::TicTacToeBoard()
 **/
 Piece TicTacToeBoard::toggleTurn()
 {
-  return Invalid;
+  if(turn == X){
+    turn = O;
+    return O;
+  }
+  else{
+    turn = X;
+    return X;
+  }
 }
 
 /**
  * Places the piece of the current turn on the board, returns what
- * piece is placed, and toggles which Piece's turn it is. placePiece does 
+ * piece is placed, and toggles which Piece's turn it is. placePiece does
  * NOT allow to place a piece in a location where there is already a piece.
- * In that case, placePiece just returns what is already at that location. 
+ * In that case, placePiece just returns what is already at that location.
  * Out of bounds coordinates return the Piece Invalid value. When the game
  * is over, no more pieces can be placed so attempting to place a piece
  * should neither change the board nor change whose turn it is.
-**/ 
+**/
 Piece TicTacToeBoard::placePiece(int row, int column)
 {
-  return Invalid;
+  if(row >= BOARDSIZE || column >= BOARDSIZE || row < 0 || column < 0)
+    return Invalid;
+
+  if(board[row][column] == Blank){
+    board[row][column] = turn;
+    toggleTurn();
+    return board[row][column];
+  }else{
+    return board[row][column];
+  }
+
+
 }
 
 /**
@@ -42,7 +60,10 @@ Piece TicTacToeBoard::placePiece(int row, int column)
 **/
 Piece TicTacToeBoard::getPiece(int row, int column)
 {
-  return Invalid;
+  if(row >= BOARDSIZE || column >= BOARDSIZE || row < 0 || column < 0)
+    return Invalid;
+
+  return board[row][column];
 }
 
 /**
@@ -51,5 +72,34 @@ Piece TicTacToeBoard::getPiece(int row, int column)
 **/
 Piece TicTacToeBoard::getWinner()
 {
+  //check horizontal win condition
+  for(int i = 0; i < BOARDSIZE; i++){
+    if(board[i][0] != Blank && board[i][0] == board[i][1] && board[i][1] == board[i][2])
+      return board[i][0];
+  }
+  //check vertical win condition
+  for(int i = 0; i < BOARDSIZE; i++){
+    if(board[0][i] != Blank && board[0][i] == board[1][i] && board[1][i] == board[2][i])
+      return board[0][i];
+  }
+  //check the diagonal win conditions
+  if(board[0][0] != Blank && board[0][0] == board[1][1] && board[1][1] == board[2][2])
+    return board[0][0];
+
+  if(board[0][2] != Blank && board[0][2] == board[1][1] && board[1][1] == board[2][0])
+    return board[0][2];
+
+  //check board is filled and no one won
+  int count = 0;
+  for(int i = 0; i < BOARDSIZE; i++){
+    for(int j = 0; j < BOARDSIZE; j++){
+      if(board[i][j] != Blank)
+        count ++;
+    }
+  }
+  if(count == 9)
+    return Blank;
+
+  //game is not over
   return Invalid;
 }
